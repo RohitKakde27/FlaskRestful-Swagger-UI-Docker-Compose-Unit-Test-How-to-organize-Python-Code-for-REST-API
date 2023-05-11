@@ -15,6 +15,7 @@ phases:
       - IMAGE_TAG=latest
   build:
     commands:
+      - pip install --upgrade pip
       - pip install -r app/requirements.txt
       - echo Build started on `date`
       - echo Building the Docker image...
