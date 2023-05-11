@@ -4,18 +4,17 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: latest
+      python: 3.9
              
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR..
+      - echo Logging in to Amazon ECR...
       - aws --version
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 496746411336.dkr.ecr.us-east-1.amazonaws.com
       - REPOSITORY_URI=496746411336.dkr.ecr.us-east-1.amazonaws.com/alpha-python-project
-      - IMAGE_TAG=latest
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
   build:
     commands:
-      - pip install --upgrade pip
       - pip install -r app/requirements.txt
       - echo Build started on `date`
       - echo Building the Docker image...
@@ -29,5 +28,3 @@ phases:
       - printf '[{"name":"alpha-python-project","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
-
-
